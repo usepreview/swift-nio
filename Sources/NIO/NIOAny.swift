@@ -238,6 +238,25 @@ public struct NIOAny {
             return self.tryAsOther(type: type)
         }
     }
+  
+    /// Try unwrapping the wrapped message as `T`.
+    ///
+    /// returns: The wrapped `T` or `nil` if the wrapped message is not a `T`.
+    public func publicTryAs<T>(type: T.Type = T.self) -> T? {
+      switch T.self {
+        case let t where t == ByteBuffer.self:
+          return self.tryAsByteBuffer() as! T?
+        case let t where t == FileRegion.self:
+          return self.tryAsFileRegion() as! T?
+        case let t where t == IOData.self:
+          return self.tryAsIOData() as! T?
+        case let t where t == AddressedEnvelope<ByteBuffer>.self:
+          return self.tryAsByteEnvelope() as! T?
+        default:
+          return self.tryAsOther(type: type)
+      }
+    }
+
 
     /// Unwrap the wrapped message.
     ///
